@@ -1,0 +1,1121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd" [
+<!ENTITY RFC2119 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.2119.xml">
+<!ENTITY RFC6020 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6020.xml">
+<!ENTITY RFC6241 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6241.xml">
+<!ENTITY RFC6242 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6242.xml">
+<!ENTITY RFC6536 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.6536.xml">
+<!ENTITY RFC7158 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7158.xml">
+<!ENTITY RFC7589 SYSTEM "http://xml.resource.org/public/rfc/bibxml/reference.RFC.7589.xml">
+<!ENTITY I-D.ietf-i2rs-architecture SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-i2rs-architecture.xml">
+<!ENTITY I-D.ietf-i2rs-rib-info-model SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-i2rs-rib-info-model.xml">
+<!ENTITY I-D.ietf-netmod-acl-model SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netmod-acl-model.xml">
+<!ENTITY I-D.ietf-i2rs-traceability SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-i2rs-traceability.xml">
+<!ENTITY I-D.ietf-i2rs-usecase-reqs-summary SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-i2rs-usecase-reqs-summary.xml">
+<!ENTITY I-D.ietf-i2rs-pub-sub-requirements SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-i2rs-pub-sub-requirements.xml">
+<!ENTITY I-D.hares-i2rs-auth-trans SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.hares-i2rs-auth-trans.xml">
+<!ENTITY I-D.ietf-netmod-yang-metadata SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netmod-yang-metadata.xml">
+<!ENTITY I-D.ietf-netconf-restconf SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netconf-restconf.xml">
+<!ENTITY I-D.ietf-netconf-yang-patch SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netconf-yang-patch.xml">
+<!ENTITY I-D.ietf-netconf-yang-library SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.ietf-netconf-yang-library.xml">
+<!ENTITY I-D.openconfig-netmod-opstate SYSTEM "http://xml.resource.org/public/rfc/bibxml3/reference.I-D.openconfig-netmod-opstate.xml">
+]>
+<?xml-stylesheet type='text/xsl' href='rfc2629.xslt' ?>
+<?rfc toc="yes" ?>
+<?rfc symrefs="yes" ?>
+<?rfc sortrefs="yes"?>
+<?rfc compact="yes" ?>
+<?rfc subcompact="no" ?>
+<?rfc iprnotified="no" ?>
+<?rfc strict="no" ?>
+<rfc category="std" docName="draft-hares-i2rs-protocol-00.txt"  ipr="trust200902">
+  <front>
+    <title abbrev="I2RS Protocol">I2RS Protocol</title>
+	<author fullname="Susan Hares" initials="S." surname="Hares">
+	<organization> Huawei </organization>
+	<address>
+	  <postal>
+	   <street></street>
+	    <city>Saline</city>
+		<country>US</country>
+	  </postal>
+	 <email>shares@ndzh.com </email>
+	</address>
+	</author>
+	 	<author fullname="Andy Bierman" initials="A." surname="Beirman">
+      <organization>YumaWorks</organization>
+      <address>
+        <postal>
+          <street></street>
+          <city> </city>
+          <country></country>
+        </postal>
+        <email>andy@yumaworks.com </email>
+      </address>
+    </author>
+	<author fullname="Kent Watsen" initials="K." surname="Watsen">
+      <organization>Juniper</organization>
+      <address>
+        <postal>
+          <street></street>
+          <city> </city>
+          <country></country>
+        </postal>
+        <email>kwatsen@juniper.net</email>
+      </address>
+    </author>
+    <date year="2015" />
+    <area>Routing Area</area>
+    <workgroup>I2RS working group</workgroup>
+    <keyword>RFC</keyword>
+    <keyword>Request for Comments</keyword>
+    <keyword>I-D</keyword>
+    <keyword>Internet-Draft</keyword>
+    <keyword>I2RS</keyword>
+    <abstract>
+      <t>This document provides a proposal for the I2RS protocol covering
+        the ephemeral data store.  It provides Yang ephemeral statement, 
+        netconf protocol extensions for the ephemeral data store, and 
+        RESTCONF protocol extensions for the protocol data store.  
+	  </t>
+	  <t>This proposal is not complete, but a start toward the 
+	  I2RS work.</t>
+	 </abstract>
+  </front>
+  <middle>
+ <section anchor="intro" title="Introduction">
+   <t>This documents is a strawman/strawperson for the I2RS Protocol from early 
+   I2RS design team discussions. It focuses on the protocol extensions for
+   ephemeral data store.</t>
+   <t> This draft provides suggests the following additions to support the I2RS ephemeral state:
+   <list style="symbols">
+   <t>Yang ephemeral statement,</t>
+   <t>NETCONF (<xref target="RFC6241"></xref>) protocol extensions for the ephemeral data store,</t>
+   <t>RESTCONF (<xref target="I-D.ietf-netconf-restconf"></xref>) protocol extensions for the ephemeral data store </t> 
+   </list>
+   </t>
+   <t> 
+   draft-hares-i2rs-protocol-strawman-examples provides 
+   provides examples of this strawman protocol use for I2RS.  This 
+   draft uses a simple thermostat model to illustrate commands.     
+   </t>
+   <t>This draft is input to a NETCONF review and design team. </t>
+   </section>
+<section title="Definitions Related to Ephemeral Configuration">
+<t>
+Currently the configuration systems managed by NETCONF (<xref target="RFC6241"></xref>) or 
+RESTCONF (<xref target="I-D.ietf-netconf-restconf"></xref>) has three
+types of configuration: candidate, running, and startup operating under the config=true flag. 
+<list style="symbols">
+<t>The candidate receives configuration changes from NETCONF (RESTCONF uses 
+an abstract "unified datatstore" API.)</t>
+<t>The running configuration is the configuration currently operating on a devices </t>
+<t>The start-up configuration is the configuration that survives a reboot. </t>
+</list>
+</t>
+<t>
+The config=false flag has operational data which exists alongside the config=true data.
+Currently, there is no datastore defined for configuration false.  
+</t>
+<t>
+Ephemeral state is nevered copied into the start-up state 
+which survives a reboot. 
+</t>
+<t>
+<figure>
+<artwork>
+ ...........      ...........     ...........
+ :Candidate : --> : running : --> :start-up  :
+ ...........      ...........     ...........
+ 
+ config true
+ ---------------------------------------------
+ config false    
+            ===============
+            | operational  |
+            | data         |
+            ================
+
+ Figure 1 				
+</artwork>
+</figure>
+</t>
+<t>
+In reality, the running configuration becomes the intended
+configuration that is intended to be loaded into a device. 
+The loading process of the intended configuation into a
+devices compares it against the actual devices and 
+creates the actual configuration loaded into a box.
+</t>
+<t>
+Some people denote the actual configuration as applied
+configuration. The <xref target="I-D.openconfig-netmod-opstate"></xref>
+denotes the actual configuration as derived state.
+This document will use the term actual configuration. 
+</t>
+<t> 
+<figure>
+<artwork>
+ ...........      ...........     ...........
+ :Candidate : --> : running : --> :start-up :
+ ...........      ...........     ...........
+                          
+                 =============
+                 | Intended  |
+                 | config    |
+                 =============					
+ config true 
+ ---------------------------------------------
+ config false  
+                 =============
+                 | Actual    |
+                 | config    |
+                 =============	
+             ______________
+            | operational  |
+            | data         |
+            |______________|
+
+ Figure 2 				
+</artwork>
+</figure>
+</t>
+<t>
+Recently the <xref target="I-D.openconfig-netmod-opstate"></xref> has proposed
+that actual configuration, and the traditional type of 
+operational data be included as operational state.  
+This document will use the definitions above to discuss ephemeral state
+until the NETCONF/NETMOD WG agrees upon the changes to the state diagrams. 
+</t>
+</section>
+ <section title="Definition of ephemeral datastore for NETCONF/RESTCONF"> 
+ <t>
+ This section describes the properties of the ephemeral datastore. 
+ The ephemeral datastore is not unique to I2RS. This approach to the 
+ ephemeral datastore is a panes-of-glass model with two panes of 
+ glass.  Pane 1 is the original configuration, and Pane 2 is the 
+ I2RS ephemeral configuration. 
+ </t>
+ <t> This definition of I2RS ephemeral state does not consider
+ caching in the I2RS agents.  The I2RS WG has considered I2RS caching
+ out of scope for the initial release, but future I2RS
+ work may reconsider supporting caching.  Caching provides 
+ a method to provide enhanced performance, but requires a
+ additional complexity in the I2RS Agent.  
+ </t>
+<t>
+The ephemeral data store has the following qualities: 
+<list style="numbers">
+<t> Ephemeral state is not unique to I2RS work.
+</t>
+<t> The ephemeral datastore is a datastore that holds ephemeral
+configuration information that is intended to not survive a reboot.  
+Configuration information is defined as "config=true"" nodes. 
+</t>
+<t>Since Ephemeral is just about data not persisting over a reboot, so
+in theory every configuration data node in a YANG data model could be ephemeral. The importance
+of tagging an "ephemeral node" is for conformance checking.  Therefore, 
+ephemeral nodes needs to be signaled in the conformance portions of the 
+NETCONF and RESTCONF work.  Conformance is signaled in the following ways: 
+<list style="symbols">
+<t>The conformance portion of NETCONF (<xref target="RFC6241"></xref>) is currently
+signaled in the &lt;hello&gt;. 
+<!--Editor: Check on capabilities vs. conformance)-->
+</t> 
+<t>Yang 1.1 and RESTCONF uses the module library (<xref target="I-D.ietf-netconf-yang-library"></xref>)
+</t>
+<t>NETCONF may use the module library in the future. 
+</t>
+</list> 
+</t>
+<t>The ephemeral datastore is never locked.
+ </t>
+<t>The ephemeral datastore is one pane of glass that
+overrides the running data store.  
+</t>
+<t>Ephemeral data can be exposed in two  ways: 
+<list style="symbols">
+<t>YANG module with nodes that can be either non-ephemeral and
+ ephemeral, </t>
+<t>YANG modules with added nodes which can only be ephemeral.
+</t>
+</list>
+Ephemeral data nodes cannot have non-ephemeral data nodes within the
+subtree. Ephemeral sub-modules cannot have non-ephemeral data nodes within the module.
+Ephemeral modules cannot have non-ephemeral sub-modules or nodes within the module.
+</t>
+<t>
+Ephemeral nodes will be denoted by an "ephemeral" config statement
+in the YANG protocol at the node levelm submodule, and module level. 
+</t>
+<t>Ephemeral has two additional error handling features: 
+<list>
+<t>Ephemeral data store allows for reduced error handling that MAY remove the 
+requirements for leafref checking, MUST clauses, and instance identifier.
+</t> 
+<t>Ephemeral data store allows for priority resolution of two 
+clients attempting a valid write for the same node. 
+<list style="symbols"> 
+<t>Priority error resolution means each I2RS client of the
+ephemeral I2RS agent (netconf server) is associated with a priority.</t>
+<t>Priority write resolution occurs when a I2RS client with a higher priority 
+writes a node which has been written by an I2RS client (with the lower priority). </t>
+<t>When the I2RS agent (netconf server) allows a higher priority client to
+overwrite a lower priority client, the I2RS Agent  
+MAY  provide a notification indication to entities monitoring the node. </t>
+</list>
+
+
+At this point, the I2RS agent (netconf server) allows the write and 
+may provide a notification indication to entities monitoring the node. 
+</t>
+</list>
+</t> 
+</list>
+</t>
+</section>
+<section title="Error handling">
+<t>
+Error handling is an I2RS protocol feature.   Normal error handling of 
+I2RS Agent for an I2RS client's information examines the following: 
+<list style="symbols"> 
+<t>syntax validation for nodes of data model,</t>
+<t>referential validation for nodes of data model, </t>
+<t>grouping of data within a data models or across data models
+to accomplish tasks,</t>
+<t>permission to write nodes of data model, </t>
+<t>grouping, </t>
+<t>priority to write nodes of data model being higher than 
+existing priority</t>
+</list>
+</t>
+<t>
+This section describes the ephemeral datastore's handling of each
+of these error functions.
+</t>
+<section title="syntax validation">
+<t>Syntax validation of the message should be done according to the
+NETCONF or RESTCONF protocol features.  New features for ephemeral
+datastore should provide the error handling with the feature.</t>
+<t>Syntax validation of the data model included in the 
+ephemeral data store should be done by the I2RS Agent (NETCONF/RESTCONF server). </t>
+</section>
+<section title="Referential validation">
+<t> The ephemeral data store normal processing MAY not do 
+the following referential checks: leafref, MUST, instance identifier.
+The optional removal of these referential validations allows for 
+intelligence I2RS clients to rapidly read or write data, and 
+handle error conditions at a higher level. 
+</t>
+</section>
+<section title="Grouping and Error handling">
+<t>Yang 1.0 and Yang 1.1 provide the ability to group data in
+groupings, leafref lists, lists, and containers.  Data models group data in order
+to group data that is logically associated with one another.  Data models
+may logical group data across groupings.  One example of such an association 
+is the association of a static route with an interface.  The concepts of 
+groupings apply to both ephemeral and non-ephemeral nodes within a data model. 
+</t>
+<t>
+Error handling on writes of the ephemeral datastore  is different for nodes 
+that are grouped versus orthogonal.  Group nodes may need to be all changed
+or all removed (all-or-nothing).  In contrast, writing orthogonal data nodes
+in the same data module or between data models need to be added or deleted in sync.  
+</t>
+<t>
+The <xref target="I-D.ietf-i2rs-architecture"></xref> specifies three types
+of error handling for a partial write operation: "all-or-nothing", 
+"stop-on-error", or "continue-on-error".   Partial write operations 
+of "stop-on-error" or "continue-on-error" are allowed only for data writes 
+which are not a part of a grouping within a data model.
+The definition of the I2RS error conditions are: 
+<list style="symbols">
+<t>stop-on-error - means that the configuration process stops when a write
+to the configuration detects an error due to write conflict.</t>
+<t>continue-on-error - means the configuration process continues when a
+write to the configuration detects an error due to write process, and
+error reports are transmitted back to the client writing the error. </t>
+<t>all-or-nothing - means that all of the configuration process is 
+correctly applied or no configuration process is applied.
+(Inherent in all-or-nothing is the concept of checking all changes
+before applying.)</t>
+</list>
+</t>
+<t>Only "all-or-nothing is supported for the first release of I2RS protocol. "</t>
+<section title="NETCONF Support of Partial Writes">
+<t>NETCONF does not support a mandated sequencing of 
+edit functions or write functions.  Without this 
+mandated sequences, NETCONF cannot support partial edits. 
+ </t>
+</section>
+<section title="RESTCONF Support of Partial Writes">
+<t>RESTCONF has a complete set of operations per message. 
+The RESTCONF patch can support accessing multiple data messages. </t>
+</section>
+<section title="Initial Support of Partial Writes">
+<t>The initial releases of I2RS will only require "all-or-nothing"
+in the I2RS Agent. 
+ </t>
+</section>
+</section>
+</section>
+<section title="I2S Agent-I2RS Client Connections">
+<t>
+A logical session between a I2RS client and an I2RS agent may have zero or 
+many transport sessions occuring at one time.  The initial establishment
+of a logical session requires communication between the I2RS client and
+I2RS Agent so mutual authentication can occur.  This mutual authentication 
+requires an external source (AAA, Administrator, or others) to distribute
+valid identity information (identity, I2RS priority) and keys for
+the secure transportation of the identity information.  After the initial
+session establishment, a pair of I2RS client to I2RS agent exchange may utilizes
+0 to N transport connections where "N" is the number of transport that 
+the agent can support.  The transport session will normally be a 
+secure and encrypted transport, but on rare occassions this transport may 
+be an insecure transport sending data that an I2RS data model deems is reasonable
+to be sent ove an insecure connection. 
+</t>
+<t>The logical session between an I2RS client and an I2RS Agent requires 
+a specific commands to disconnect the session.  The following commands: 
+<list> 
+<t>&lt;i2rs-disconnect&gt; - graceful disconnect of I2RS session</t>
+<t>&lt;i2rs-kill&gt; - immediate termination of I2RS session</t>
+</list>
+</t>
+<t>These commands will have a "request/response" subfield that will allow
+either the I2RS client or the I2RS agent (netconf) server to initiate 
+the request.  This command will be sent on NETCONF/RESTCONF commands. 
+</t> 
+</section>
+<section title="Priority Preemption">
+<section title="Basic Priority Preemption">
+<t> I2RS protocol uses priority to resolve two I2RS clients having
+permissions to write the same pieces of data in an I2RS agent (NETCONF server).
+If two (or more) I2RS clients attempt to write the same data, 
+the one with the highest priority is enabled to write the data. 
+In the case of two clients with the sample priority attempting to write data,
+the the first one to request write wins.
+</t>
+<t> 
+Each client has a unique priority.  Client identities and priorities are
+assigned outside of I2RS by exterior mechanisms such as AAA or adminstrative interfaces.
+A valid I2RS client must have both an identity and a priority.
+</t>
+<t>A sample container for I2RS client information is shown below.
+<figure>
+<artwork>
+   container i2rs-clients {
+       leaf max-clients {
+          config false;
+          mandatory true;
+          type uint32 {
+            range "1 .. max";
+          }
+       }
+       list i2rs-client {
+          key name;
+          unique priority;
+          leaf name { ... }
+          leaf priority { ... }
+       }
+    }
+ Figure 3 				
+</artwork>
+</figure>
+</t>
+</section> 
+<section title="I2RS Agent Timeouts and Priority Preemption">
+</section>
+</section>
+<section title="Yang Library Use by Ephemeral">
+<t>
+The data modules supporting the Ephemeral datastore 
+can use the Yang module to describe their datastore. 
+Figure 4 shows the module library data structure. 
+One part of the features of a module is the type of
+ephemeral support (module level, submodule level, 
+or node level with a list of nodes).  A feature 
+list gives the reference to the identifier for thea
+ephemeral support.  The feature references may allow
+for vendor extensions to ephemeral support for a 
+specific model. Similarly, the deviation may point
+to a deviation for a ephemeral state model.  
+</t>
+<t>
+<figure>
+<artwork>
+  +--ro modules 
+     +--ro module*[name revision] 
+        +--ro name  yang: yang-identifier
+        +--ro revision  union; 
+        +--ro schema?   inet:uri
+        +--ro namespace   inet:uri
+        +--ro feature*    yang:yang-identifier			
+        +--ro deviation* [name revision] 
+        |  +-- ro name   yang:yang-identifier
+        |  +-- ro revision union
+        +--ro conformance enumeration 
+		+--ro submodules
+           +--ro submodule*[name revision]
+	       +--ro name yang:yang-identifier 
+              +--ro revision  union
+              +--ro schema?  inet:uri 
+			  
+         Figure 4 
+</artwork>
+</figure>
+</t>
+</section>
+<section title="transport protocol">
+<section title="Secure Protocols">
+<t>NETCONF's XML-based protocol (<xref target="RFC6241"></xref>) can operate over 
+the following secure and encrypted transport layer protocols: 
+<list>
+<t>SSH as defined in <xref target="RFC6242"></xref>,</t>
+<t>TLS with X.509 authentication <xref target="RFC7589"></xref></t>
+</list>
+</t>
+<t>RESTCONF's XML-based or JSON <xref target="RFC7158"></xref>
+data encodings of Yang functions are passed over http with (GET, POST, 
+PUT, PATCH, DELETE, OPTIONS, and HEAD). 
+</t>
+</section>
+<section title="Insecure Protocol ">
+<t> The ephemeral database may support insecure protocols
+for information which is ephemeral state which 
+does not engage configuration.  The insecure protocol
+must be defined in conjunction with a data model or 
+a subdata model.
+</t>
+</section>
+</section> 
+<section title="Simple Thermostat Model">
+<t> 
+In this discussion of ephemeral configuration, 
+this draft utilizes a simple thermostat model with the
+YANG configuration found in figure 4. 
+</t>
+<t> 
+<figure>
+<artwork>
+module thermostat {
+  ..
+  leaf desired-temp {
+     type int32;
+	 units "degrees Celsius";
+	 description "The desired temperature";
+	 }
+  
+  leaf actual-temp {
+     type int32;
+	 config false;
+	 units "degrees Celsius";
+	 description "The measured temperature
+	 (operational state).";
+	 }
+  }
+
+Figure 4 - Simple thermostat model yabng
+</artwork>
+</figure>
+</t>
+<t> 
+Figure 5 shows the diagram of the configuration state
+with the Simple thermostat model being attached to by 
+an I2RS scheduler client receiving query information 
+regarding intended configuration and actual configuration. 
+Scheduler has a schedule set of temperatures to put in the thermostat.
+Actual temperature is operational state. 
+<figure>
+<artwork>
+ ...........      ...............   ...........
+ :Candidate : --> : Desired temp:-->:start-up :
+ ...........      ...............   ...........
+                       |
+                       V					   
+                 ============    ===========
+                 | Intended |----| I2RS    |
+                 | config   |    |scheduler|
+                 |          |    | client  |
+                 ============	 ===========
+ config true                          ^
+ -------------------------------      |
+ config false                         |
+                 =============        |
+                 | Actual    |--------|
+                 | config    |
+                 =============
+                      				 
+             ______________
+            | actual temp  |
+            |(operational  |
+            |    state     |
+            | (op-state)   |
+            ---------------
+ 
+Figure 5 - Scheduler client only  
+</artwork>
+</figure>
+</t>
+<t>
+Figure 6 shows two I2RS clients talking to this model: scheduler and hold-temp.
+Scheduler has a schedule set of temperatures to put in the thermostat.
+Hold-temp holds the temperature at the same value. The hold-temp 
+I2RS client has a higher priority than the scheduler client. 
+<figure>
+<artwork>
+ ...........      ...............   ...........
+ :Candidate :---: Desired temp  : -- :start-up :
+ ...........      ...............   ...........
+                       |   
+                       |          =============
+                       |          |I2rs Client|
+                       |          |scheduler  |
+                       V         / ============
+              ................../			 
+ ephemeral    . '''''''''''''''/.  ==============
+ datastore    . 'desired-temp'---- |I2RS Client |
+              . '''''''''|'''' .   | hold temp  |   
+              .          |     .   ==============
+              .          |     .   ============
+              .          |---------| intended |
+              .                 .  | config   |
+              .                 .  ======||====  
+ config true  .                 .        ||      
+ --------------------------------------  || 
+ config false                            ||   
+                 =============           ||    
+                 | Actual    |============ 
+                 | config    |
+                 =============
+          					 
+             ______________
+            | actual temp  |
+            | (op-state)   |
+            ----------------
+ 
+Figure 6 - Two I2RS clients 
+</artwork>
+</figure>
+</t>
+</section>
+<section title="Yang changes">
+ <t>
+ Yang needs to add a key word ephemeral at the leaf node
+ that signals allowing a version of 
+ desired-temp in the ephemeral datatstore in YANG.  
+<figure>
+<artwork>
+module thermostat {
+  ..
+ 
+  leaf desired-temp {
+     type int32;
+	 units "degrees Celsius";
+	 ephemeral true;
+	 description "The desired temperature";
+	 }
+   
+  leaf actual-temp {
+     type int32;
+	 config false;
+	 units "degrees Celsius";
+	 description "The measured temperature";
+	 }
+  }
+
+Figure 7 - Simple Thermostat Yang with ephemeral 
+</artwork>
+</figure>
+</t>
+<t>
+Figure 7 shows the thermostat model has emphemeral variable desired-temp in the
+running configuration and the ephemeral data store. The RESTCONF way of 
+addressings is below: 
+<figure>
+<artwork>
+RESTCONF running data store
+
+PUT /restconf/data/thermostat:desired-temp
+{"desired-temp":18}
+
+RESTCONF ephemeral datastore 
+
+PUT /restconf/data/thermostat:desired-temp?datastore=ephemeral
+{"desired-temp":19 }
+
+Figure 8 - RESTCONF setting of ephemeral state 
+</artwork>
+</figure>
+</t>
+<t>
+The NETCONF way of transmitting this data would be 
+<figure>
+<artwork>
+&lt;rpc-message-id=101
+  xmlns="urn:ietf:params:xml:ns:base:1.0"&gt; 
+  &lt;edit-config&gt;
+    &lt;target&gt;
+     &lt;ephemeral&gt;
+    &lt;/target&gt;
+    &lt;config&gt;
+      &lt;top xmlsns="http:://example.com/schema/1.0/thermostat/config&gt;
+       &lt;desired-temp&gt; 18 &lt;/desired-temp&gt;
+      &lt;/top&gt;
+    &lt;/config&gt;
+   &lt;/edit-config&gt;
+&lt;/rpc&gt;
+
+Note: config=TRUE; datastore = ephemeral
+
+figure 8 NETCONF setting of desired-temp     
+</artwork>
+</figure>
+</t>
+ </section>
+<section title="NETCONF protocol extensions for the ephemeral datastore">
+<t>
+capability-name: ephemeral-datastore
+</t>
+<section title="Overview">
+<t>
+This capability defines the NETCONF protocol extensions for the ephemeral state.
+The ephemeral state has the following features: 
+<list style="symbols">
+<t>the ephemeral datastore is a datastore holds configuration information
+(Config=true) that is intended to not survive a reboot.   </t>
+<t>The ephemeral capability is signaled as a capability for 
+ a node, a sub-module, or a module either in the conformance portion of
+ NETCONF (&lt;hello&gt;) or via netconf YANG module library 
+ (<xref target="I-D.ietf-netconf-yang-library"></xref>) used by Yang 1.1 and
+ RESTCONF. 
+ </t>
+ <t>ephemeral data will be doted by an "ephemeral statement at the 
+node, module "</t>
+<t>The ephemeral datastore is never locked. </t>
+<t>Each client has a unique priority.</t>
+<t>The ephemeral data store is one pane of glass that overrides
+the intended config which is normally the running datastore, but can be designated 
+as the candidate config. </t>
+<t>Ephemeral data nodes can occur as part of the following types of data modules: 
+<list> 
+<t>protocol dependent data models which mix non-ephemeral and ephemeral 
+configuration data (config=true),</t>
+<t>protocol dependent data models which have only ephemeral data models,</t>
+<t>protocol independent data modules with only ephemeral data, </t>
+</list>
+However, ephemeral data nodes cannot have non-ephemeral data nodes within the
+subtree. Ephemeral sub-modules cannot have non-ephemeral data nodes wihin the module.
+Ephemeral modules cannot have non-ephemeral sub-modules or nodes within the module.
+</t>
+<t>ephemeral error checking allows for two additional options:
+<list style="symbols">
+<t>reduced error checking that remove the requirement for 
+leafref checking, MUST clauses, and instance identifier validation. </t>
+<t>write operation with a priority preemption by a higher priority 
+client of the lower priority clients write. (Note that 
+when a overwrite occurs the lower priority I2RS client SHOULD receive a notification
+that data has been overwritten.) </t>
+</list>
+</t>
+</list>
+</t>
+</section>
+<section title="Dependencies">
+<t>The following are the dependencies for ephemeral support:
+<list>
+<t>The Yang data modules must be marked with the ephemeral flag at 
+the node, sub-module and model. </t>
+<t>The Yang data modules must be flag with the ephemeral data store.
+</t>
+<t>The Yang modules must support the notification of write-conflicts.
+</t>
+</list>
+</t>
+</section>
+<section title="Capability identifier">
+<t>
+The ephemeral-datastore capability is identified by the following capability
+ string: (capability uri)</t>
+</section>
+<section title="New Operations">
+<section title="link-ephemeral">
+<t>The &lt;link-ephemeral&gt; allows the ephemeral datastore to 
+be a pane of glass that impacts either the running-config configuration
+pane of glass or the candidate configuration pane of glass.
+</t>
+<t>
+<figure>
+<artwork>
+&lt;link-ephemeral&gt; target-config 
+
+where target config is: 
+writable-running or candidate config. 
+</artwork>
+</figure>
+</t>
+</section>
+<section title="Bulk-write">
+<t>The bulk-write goes here.  
+</t>
+<t> Possible use cases for bulk-write are: 
+<list style="symbols">
+<t>failover state synchronization,  </t>
+<t>Upload of multiple RIBs of 10K or greater routes,  </t>
+<t>Topology uploades of large topologies. </t>
+</list>
+</t>
+<t>
+Additional input is needed for this case. 
+</t>
+</section>
+<section title="Bulk-Read">
+<t>The bulk-read may need to support  
+Possible use cases for bulk-read are: 
+<list style="symbols">
+<t>failover state synchronization,  </t>
+<t>large quantities of state from network nodes, </t>
+<t>Upload of multiple RIBs of 10K or greater routes,  </t>
+<t>Topology uploades of large topologies. </t>
+</list>
+</t>
+</section>
+</section>
+<section title="Modification to existing operations">
+<t>The capability for :ephemeral-datastore modifies the 
+target for existing operations. </t>
+<section title="&lt;get-config&gt;">
+<t>The :ephemeral-datastore capability modifies the &lt;edit-config&gt;
+to accept the &lt;ephemeral&gt; as a target for source, and allows
+the filters focused on a particular module, submodule, or node.
+</t>
+<t>
+<figure>
+<artwork>
+&lt;rpc message-id="101"
+  xmlns="urn:ietf:params:xml:ns:netconf:base:1.0"&gt;
+&lt;get-config&gt;
+&lt;source&gt;
+&lt;emphemeral-datastore/&gt;
+&lt;/source&gt;
+&lt;filter type="subtree"&gt;
+&lt;top xmlns="http://example.com/schema/1.0/thermostat/config">
+&lt;desired-temp&gt;
+&lt;/top&gt;
+&lt;/filter&gt;
+&lt;/get-config&gt;
+&lt;/rpc&gt;
+</artwork>
+</figure>
+</t>
+</section>
+<section title="&lt;edit-config&gt;">
+<t>The :ephemeral-datastore capability modifies the &lt;edit-config&gt;
+to accept the &lt;ephemeral&gt; as a target for source with filters. 
+The operations of merge, replace, create, delete, and remove are available,
+but each of these operations is modified by the priority write as follows:
+<list>
+<t>&lt;merge&gt; parameter is replaced by - merge-priority. 
+The current data is modified by the new data in a merge
+fashion only if existing data either does not exist, or is owned by a lower priority client.
+If any data is replaced, this event is passed to the notification function 
+within the pub/sub and traceability. 
+</t>
+<t>&lt;replace&gt; is replaced by replace-priority - which 
+only replaces data if the existing 
+data is owned by a lower priority client.  If any data is replaced,
+this event is passed to the notification function within pub/sub 
+and traceability for notification to the previous client. 
+The success or failure of the event is passed to traceabilty. 
+</t>
+<t>&lt;create&gt; - the creation of the data node works as in 
+<xref target="RFC6241"></xref> except that the success or failure is
+passed to pub/sub and traceability functions. 
+</t>
+<t>&lt;deletion&gt; - the deletion of the data node works as in 
+<xref target="RFC6241"></xref> except event that the success or 
+the error event is passed to the notiication function withi pub/sub
+and traceability functions. 
+</t>
+<t>&lt;remove&gt; - the remove of the data node works as in 
+<xref target="RFC6241"></xref> except that all results are 
+forwarded to traceabilty. 
+</t>
+</list>
+</t>
+<t>
+The existing parameters are modified as follows: 
+<list>
+<t>&lt;target&gt; - add a target of :emphemeral-datastore
+</t>
+<t>&lt;default-operation&gt; -sllows only &lt;merge-priority&gt; or
+&lt;replace-priority&gt;</t>
+<t>&lt;error-option&gt; - the I2RS agent agent has "stop-on-error",
+"continue-on-error", and "all-or-nothing" which follow the 
+validation rules listed above. This also requires I2RS agents
+that support writes to have a "all-or-nothing"/"rollback-on-error" function. </t>
+<t>Note: The I2RS minimal function suggests that only error function
+that is required is the "all-or-nothing" function. 
+</t>
+<t>positive response - the &lt;ok&gt; is sent for a positive response 
+within an &lt;rpc-reply&gt;. </t>
+<t>negative response - the &lt;rpc-error&gt; is sent for a negative response 
+within an &lt;rpc-reply&gt;. </t>
+</list>
+</t>
+</section>
+<section title="&lt;copy-config&gt;">
+<t>Copy config allows for the complete replacement
+of all the ephemeral nodes within a target. 
+The alternation is that source is the :ephemeral datastore
+with the fitlering to match the datasore. </t>
+</section>
+<section title="&lt;delete-config&gt;">
+<t>The delete will delete all ephemeral nodes out of a datastore. 
+The target must be changed to be ephemeral configuration 
+and filters. </t>
+</section>
+<section title="&lt;lock&gt; and &lt;unlock&gt;">
+<t>Lock and unlock are not supported with a target of :ephemeral-datastore.
+ </t>
+</section>
+<section title="&lt;get&gt;">
+<t>The &lt;get&gt; is altered to allow a target of :ephemeral-datastore and  
+with the filters.  
+ </t>
+</section>
+<section title="&lt;close-session&gt; and &lt;kill-session&gt;">
+<t>The close session is modified to take a taret of "ephemeral-datastore" 
+and to not release locks.
+</t>
+<t>The kill session is modified to take a target of "ephemeral-datastore, 
+and to not change locks. " </t>
+</section>
+</section>
+<section title="Interactions with Other Capabilities">
+<t>
+<xref target="RFC6241"></xref> defines NETCONF capabilities for 
+writeable-running datastore, candidate config data store, 
+confirmed commit, rollback-on-error, validate, distinct start-up, 
+URL capability, and XPATH capability. 
+</t>
+<section title="writable-running and candidate datastore">
+<t>
+The writeable-running and the candidate datastore can be used in conjunction
+with the ephemeral data store. Ephemeral database overlays
+an intended configuration - either the writable-running or the
+candidate configuration data store.  The &lt;link-ephemeral&gt; operation
+links the two databases. 
+</t>
+</section>
+<section title="confirmed commmit">
+<t>Confirmed commit capability is not supported for the ephemeral 
+datastore. </t>
+</section>
+<section title="rollback-on-error">
+<t> The rollback-on-error when included with ephemeral state 
+allows the error handling to be "all-or-nothing" (roll-back-on-error), 
+"stop-on-error", and "continue-on-error". The error handling with I2RS
+ephemeral state is described above. Initial implementations 
+of the I2RS agent are only required to support the default "roll-back-on-error".
+The use of the rollback-on-error capability allows the optional support of
+more capabiity in enhanced I2RS nodes.
+</t>
+</section>
+<section title="validate">
+<t>The &lt;validate&gt; key word is expanded to support the following:
+<list>
+<t>source: ephemeral-datastore</t>
+<t>filters: reference to data node, sub-module or module.</t>
+</list> 
+</t>
+</section>
+<section title="Distinct Startup Capability">
+<t>This NETCONF capability appears to operate to load write-able running config,
+running-config, or candidate datastore.  The ephemeral state does  not 
+change the environment based on this command. 
+</t>
+</section>
+<section title="URL capability and XPATH capability">
+<t>The URL capabilities specify a &lt;url&gt; in the &lt;source&gt;
+and &lt;target&gt;.  The initial suggestion to allow both of these
+features to work with ephemeral operation.  </t>
+</section>
+</section>
+</section> 
+<section title="RESTCONF protocol extensions for the ephemeral datastore">
+<t>
+capability-name: ephemeral-datastore
+</t>
+<section title="Overview">
+<t>
+This capability defines the RESTCONF protocol extensions for the ephemeral state.
+The ephemeral state has the features described in the previous section on NETCONF. 
+</t>
+</section>
+<section title="Dependencies">
+<t>The ephemeral capabilities have the following dependencies: 
+<list>
+<t>Yang data nodes, sub-modules, or modules must be flaged with the
+config datastore flag;
+</t>
+<t>The Yang modules must support the notification of write-conflicts.
+</t>
+<t>The I2RS Yang modules must support the following: 
+<list> 
+<t> the YANG-patch features as specified in 
+<xref target="I-D.ietf-netconf-yang-patch"></xref>.</t>
+<t>The YANG module library feature <xref target="I-D.ietf-netconf-yang-library"></xref>,
+</t>
+</list>
+</t>
+</list>
+</t>
+</section>
+<section title="Capability identifier">
+<t>
+The ephemeral-datastore capability is identified by the following capability
+ string: (capability uri)</t>
+</section>
+<section title="New Operations">
+<section title="Bulk-write">
+<t>The bulk-write goes here.</t>
+</section>
+<section title="Bulk-Read">
+<t>The bulk-read goes here.</t>
+</section>
+</section>
+<section title="modification to data resources">
+<t>RESTCONF must be able to support the ephemeral 
+datstore with its rules as part of the "{+restconf}/data" 
+subtree. The "edit collision" features in RESTCONF
+must be able to provide notification to the I2RS pub/sub 
+facility and the traceability functions. The "timestamp" with a
+last modified features must support the traceability function. 
+</t>
+</section>
+<section title="Modification to existing operations">
+<t>The current operations in RESTCONF are: OPTIONS,
+HEAD, GET,  POST, PUT, PATCH, and DELETE. This section 
+describes the modification to these exiting operations.</t>
+<section title="OPTIONS changes">
+<t>
+The options methods should be augmented by the
+<xref target="I-D.ietf-netconf-yang-library"></xref> information
+that will provide an indication of what ephemeral state exists
+in a data modules, or a data modules sub-modules or nodes.
+</t>
+</section>
+<section title="HEAD changes">
+<t>
+The HEAD in retrieving the headers of a resources. It would
+be useful to change these headers to indicate the datastore 
+a node or submodule or module is in. 
+</t>
+<t>(editor)TBD on how HEAD can be changed to do this. </t>
+</section>
+<section title="GET changes">
+<t>
+GET must be able to read from the URL and a particular datastore.
+</t>
+<t>(editor) TBD on how to filter for datastore in read. </t>
+</section>
+<section title="POST changes">
+<t>
+POST must simply be able to create resources in ephemeral datastores and
+invoke operations defined in ephemeral data models using the rules of
+the ephemeral database.
+</t>
+</section>
+<section title="PUT changes">
+<t>
+PUT must be able to reference an ephemeral module,
+sub-module, and nodes. 
+</t>
+</section>
+<section title="PATCH changes">
+<t>
+Plain PATCH must be able to update or create child resources in an 
+ephemeral datastore.  The PATCH for the ephemeral state must be
+changed to provide a merge or update of the original data only 
+if the client is using the patch has a higher priority than an existing
+datastore's client, or if PATCH requests to create a new node, 
+sub-module or module in the datastore.  
+</t>
+</section>
+<section title="DELETE changes">
+<t>
+The phrase "?datastore=ephemeral" following an element will specify
+the ephemeral data store when deleting entry. 
+</t>
+</section>
+<section title="Query Parameters">
+<t>The query parameters (content, depth, fields,
+insert, point, start-time, stop-time, and with-defaults (report-all,
+trim, explicit, report-all-tagged) must support ephemeral datastores
+described above. </t>
+</section>
+</section>
+<section title="Interactions with Other Capabilities">
+<t>The ephemeral database must support subscribing to 
+receiving notifications as Event stream.  The ephemeral database]
+support in RESTCONF must also support passing error information regarding 
+ephemeral data access over to pub/sub client and traceability client. 
+</t>
+</section> 
+</section>  
+<section anchor="IANA" title="IANA Considerations">
+      <t>TBD </t>
+    </section>
+ <section title="Security Considerations">
+      <t>TBD
+	  </t>
+    </section>
+<section anchor="Acknowledgements" title="Acknowledgements">
+	<t>
+	    This document is an attempt to distill lengthy conversations on
+	    the I2RS proto design team from August 
+	</t>
+	<t> Here's the list of the I2RS protocol design team members
+	    <list style="symbols">
+		<t>Alia Atlas</t>
+		<t>Ignas Bagdonas</t>
+		<t>Andy Bierman</t>
+		<t>Alex Clemm</t>
+		<t>Eric Voit</t>
+		<t>Kent Watsen </t>
+		<t>Jeff Haas</t>
+		<t>Keyur Patel</t>
+		<t>Hariharan Ananthakrishnan</t>
+		<t>Dean Bogdanavich</t>
+		<t>Anu Nair</t>
+		<t>Juergen Schoenwaelder</t>
+		<t>Kent Watsen</t>
+	    </list>
+	</t>
+</section>
+</middle>
+ <back>
+    <references title="Normative References:">
+	 &I-D.ietf-i2rs-architecture;
+     &I-D.ietf-i2rs-rib-info-model;
+	 &I-D.ietf-i2rs-traceability;
+	 &I-D.ietf-i2rs-pub-sub-requirements;
+	 &I-D.ietf-netmod-yang-metadata;
+	 &I-D.hares-i2rs-auth-trans;
+	 &I-D.openconfig-netmod-opstate;
+	 &I-D.ietf-netconf-yang-patch;
+     &I-D.ietf-netconf-restconf;
+	 &I-D.ietf-netconf-yang-library;
+	 &RFC6242;
+	 &RFC7158;
+	 &RFC7589;
+	</references>
+    <references title="Informative References">
+      &RFC2119;
+	  &RFC6020;
+	  &RFC6241;
+	  &RFC6536;
+    </references>
+  </back>
+</rfc>
